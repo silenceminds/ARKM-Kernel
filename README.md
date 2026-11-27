@@ -12,6 +12,11 @@
 A custom 64-bit (`x86_64`) microkernel and operating system environment built in C and x86-64 assembly, featuring a UEFI-only Multiboot2 boot flow (via a patched GRUB 2.14 `x86_64-efi` loader), SMP multi-core bring-up, Ring 3 user-space ELF execution, a graphical compositor/dashboard, storage (AHCI/SATA, NVMe, FAT32, LunaFS), networking (E1000, IPv4/IPv6 SLAAC, TCP/HTTP), and USB xHCI HID input.
 
 ---
+## Live Demo & Video Showcase
+
+[![Watch ARKM Kernel Live Demo on YouTube](https://img.youtube.com/vi/sQ-p2lf3CV0/maxresdefault.jpg)](https://www.youtube.com/watch?v=sQ-p2lf3CV0 "Watch ARKM Kernel on YouTube")
+
+Watch the full video on YouTube: [https://www.youtube.com/watch?v=sQ-p2lf3CV0](https://www.youtube.com/watch?v=sQ-p2lf3CV0)
 
 ## Architecture Overview
 
