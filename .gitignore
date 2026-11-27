@@ -9,6 +9,7 @@
 *.iso
 arkm_ovmf_code.fd
 arkm_uefi_vars.fd
+smoke_vars.*.fd
 firmware/ovmf/OVMF_VARS_*.fd
 firmware/ovmf/edk2-ovmf.pkg.tar.zst
 firmware/ovmf/extracted/

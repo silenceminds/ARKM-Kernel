@@ -1,0 +1,53 @@
+name: ARKM Kernel CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  build-and-smoke-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install toolchain and QEMU/OVMF dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            clang lld llvm make gcc g++ flex bison \
+            mtools xorriso dosfstools python3 \
+            qemu-system-x86 ovmf ca-certificates curl xz-utils
+
+      - name: Cache GRUB 2.14 build worktree
+        uses: actions/cache@v4
+        with:
+          path: .grub-2.14-relocator-fix-work
+          key: grub-2.14-work-${{ hashFiles('build.sh') }}
+          restore-keys: |
+            grub-2.14-work-
+
+      - name: Build kernel, Ring-3 apps, and UEFI ISO
+        run: |
+          chmod +x build.sh run-arkm-uefi-only-qemu.sh tests/qemu_smoke_test.sh
+          UPDATE_RUNTIME_DISK=1 RUN_QEMU=0 ./build.sh
+
+      - name: Run headless QEMU UEFI boot smoke test
+        run: |
+          SMP_CPUS=4 QEMU_TIMEOUT_SEC=45 ./tests/qemu_smoke_test.sh
+
+      - name: Upload build & boot logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: arkm-ci-logs
+          path: |
+            *.log
+            arkm_build_manifest.txt
+            arkm_production_report.txt
+            arkm_error_tracker.txt
+          if-no-files-found: ignore
