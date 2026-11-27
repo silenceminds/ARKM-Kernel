@@ -1,0 +1,41 @@
+# Compiled object files & binaries
+*.o
+*.elf
+*.bin
+*.exe
+
+# Disk, ISO & firmware runtime images
+*.img
+*.iso
+arkm_ovmf_code.fd
+arkm_uefi_vars.fd
+firmware/ovmf/OVMF_VARS_*.fd
+firmware/ovmf/edk2-ovmf.pkg.tar.zst
+firmware/ovmf/extracted/
+
+# Keep only the clean OVMF templates in firmware/ovmf/
+!firmware/ovmf/OVMF_CODE.fd
+!firmware/ovmf/OVMF_VARS_TEMPLATE.fd
+
+# Generated launchers, manifests, reports, logs & captures
+run-arkm-passt.sh
+arkm_build_manifest.txt
+arkm_production_report.txt
+arkm_error_tracker.txt
+qemu_*.txt
+*.log
+*.pcap
+.arkm_boot_watch_stop_*
+
+# Cached GRUB build tree & temporary verification/work directories
+.grub-2.14-relocator-fix-work/
+.arkm-dual-terminal-verify/
+.arkm-old-el-torito-verify/
+.arkm-serial-only-verify/
+.uefi-test-objects/
+arkm-forensic-review/
+
+# OS & editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
