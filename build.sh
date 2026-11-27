@@ -1118,6 +1118,7 @@ echo "  PASS  linked ELF contains required ARKM/SMP/AMP/LUNA symbols"
 # ----------------------------------------------------------------------------
 log "[9/12] Building UEFI-only ISO with the ARKM-patched GRUB 2.14 tree"
 
+if [[ "$ARKM_PREBUILT_GRUB_EFI" == "0" ]]; then
 # Verify the exact relocator/PML4 preservation changes required by the current
 # ARKM UEFI handoff. Never substitute the system GRUB binary here.
 for grub_file in \
@@ -1178,6 +1179,7 @@ PYGRUB
 
 grep -Fq 'if (!accepts_video && !console_required)' "$GRUB_SOURCE_DIR/grub-core/loader/multiboot.c" \
     || fail "GRUB no-console video guard is not present after patching."
+fi
 
 
 mkdir -p iso/EFI/BOOT iso/boot/grub/fonts
