@@ -38,7 +38,7 @@ jobs:
 
       - name: Run headless QEMU UEFI boot smoke test
         run: |
-          SMP_CPUS=4 QEMU_TIMEOUT_SEC=45 ./tests/qemu_smoke_test.sh
+          SMP_CPUS=12 QEMU_TIMEOUT_SEC=60 ./tests/qemu_smoke_test.sh
 
       - name: Upload build & boot logs on failure
         if: failure()
