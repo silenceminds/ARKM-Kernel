@@ -55,8 +55,10 @@ fi
 
 printf 'Running headless QEMU smoke test (SMP=%s, RAM=%sM, timeout=%ss)...\n' "$SMP_CPUS" "$RAM_MB" "$QEMU_TIMEOUT_SEC"
 
+TARGET_MARKER="[SMP] final online/discovered=${SMP_CPUS}/${SMP_CPUS}"
+
 set +e
-timeout --preserve-status "${QEMU_TIMEOUT_SEC}s" "$QEMU_BIN" \
+"$QEMU_BIN" \
     -machine q35,acpi=on,hpet=on \
     -accel tcg,thread=multi \
     -cpu max \
@@ -79,7 +81,25 @@ timeout --preserve-status "${QEMU_TIMEOUT_SEC}s" "$QEMU_BIN" \
     -serial "file:$(qemu_path "$SERIAL_LOG")" \
     -debugcon "file:$(qemu_path "$DEBUG_LOG")" \
     -global isa-debugcon.iobase=0x402 \
-    -no-reboot
+    -no-reboot &
+QEMU_PID=$!
+
+elapsed=0
+while kill -0 "$QEMU_PID" 2>/dev/null; do
+    if grep -aFq -- "$TARGET_MARKER" "$SERIAL_LOG" 2>/dev/null; then
+        printf 'Detected %s after %ss; stopping QEMU.\n' "$TARGET_MARKER" "$elapsed"
+        kill -TERM "$QEMU_PID" 2>/dev/null || true
+        break
+    fi
+    if (( elapsed >= QEMU_TIMEOUT_SEC )); then
+        printf 'Timeout (%ss) reached; stopping QEMU.\n' "$QEMU_TIMEOUT_SEC" >&2
+        kill -TERM "$QEMU_PID" 2>/dev/null || true
+        break
+    fi
+    sleep 1
+    elapsed=$((elapsed + 1))
+done
+wait "$QEMU_PID" 2>/dev/null
 QEMU_RC=$?
 set -e
 
